@@ -13,7 +13,9 @@ function prompt() {
       const [command, ...args] = answer.split(" ");
       if (command === "echo") {
         console.log(args.join(" "));
-      } 
+      } else {
+        console.log(`${answer}: command not found`);
+      }
       // else if (command === "cat") {
       //   const fs = require("fs");
       //   const file = args[0];
@@ -42,7 +44,6 @@ function prompt() {
       // } else {
       //   console.log(`${command}: command not found`);
       // }
-      // console.log(`${answer}: command not found`);
       prompt();
     }
   });    
