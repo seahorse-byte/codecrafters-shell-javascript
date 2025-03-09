@@ -9,7 +9,6 @@ const rl = readline.createInterface({
 function isBuiltin(command, callback) {
   exec(`type ${command}`, (error, stdout, stderr) => {
     if (error) {
-      // Command not found or other error
       callback(false);
       return;
     }
@@ -33,13 +32,15 @@ function prompt() {
         console.log(args.join(' '));
       } else if (command === 'type') {
         const [subCommand] = args;
-        isBuiltin(subCommand, isBuiltIn => {
-          console.log(
-            isBuiltIn
-              ? `${subCommand} is a shell builtin`
-              : `${subCommand} not found`,
-          );
+        isBuiltin(subCommand, builtin => {
+          if (builtin) {
+            console.log(`${subCommand} is a shell builtin`);
+          } else {
+            console.log(`${subCommand} not found`);
+          }
+          prompt();
         });
+        return;
       } else {
         console.log(`${answer}: command not found`);
       }
