@@ -29,9 +29,6 @@ function prompt() {
     } else {
       const [command, ...args] = answer.split(' ');
 
-      console.log('🚀 ~ prompt ~ command:', command);
-      console.log('🚀 ~ prompt ~ args:', args);
-
       if (command === 'echo') {
         console.log(args.join(' '));
       } else if (command === 'type') {
