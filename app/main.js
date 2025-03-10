@@ -1,5 +1,6 @@
 const readline = require('readline');
 const { exec } = require('child_process');
+const path = require('path');
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -27,6 +28,24 @@ function prompt() {
       process.exit(0);
     } else {
       const [command, ...args] = answer.split(' ');
+
+      const paths = process.env.PATH.split(path.delimiter);
+
+      for (const p of paths) {
+        const fullPath = path.join(p, command);
+        if (fullPath) {
+          isBuiltin(subCommand, builtin => {
+            if (builtin) {
+              console.log(`${subCommand} is a shell builtin`);
+            } else {
+              console.log(`${subCommand} not found`);
+            }
+            prompt();
+          });
+
+          return;
+        }
+      }
 
       if (command === 'echo') {
         console.log(args.join(' '));
