@@ -34,11 +34,11 @@ function prompt() {
       for (const p of paths) {
         const fullPath = path.join(p, command);
         if (fullPath) {
-          isBuiltin(subCommand, builtin => {
+          isBuiltin(fullPath, builtin => {
             if (builtin) {
-              console.log(`${subCommand} is a shell builtin`);
+              console.log(`${fullPath} is a shell builtin`);
             } else {
-              console.log(`${subCommand} not found`);
+              console.log(`${fullPath} not found`);
             }
             prompt();
           });
