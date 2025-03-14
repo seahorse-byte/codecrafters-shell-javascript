@@ -8,7 +8,7 @@ const rl = readline.createInterface({
 });
 
 function isBuiltin(command, callback) {
-  exec(`type ${command}`, (error, stdout, stderr) => {
+  exec(`type ${command}`, (error, stdout) => {
     if (error) {
       callback(false);
       return;
@@ -31,22 +31,22 @@ function prompt() {
 
       const paths = process.env.PATH.split(path.delimiter);
 
-      for (const p of paths) {
-        const fullPath = path.join(p, command);
+      // for (const p of paths) {
+      //   const fullPath = path.join(p, args[0]);
 
-        if (fullPath) {
-          isBuiltin(fullPath, builtin => {
-            if (builtin) {
-              console.log(`${fullPath} is a shell builtin`);
-            } else {
-              console.log(`${fullPath} not found`);
-            }
-            prompt();
-          });
+      //   if (fullPath) {
+      //     isBuiltin(fullPath, builtin => {
+      //       if (builtin) {
+      //         console.log(`${fullPath} is a shell builtin`);
+      //       } else {
+      //         console.log(`${fullPath} not found`);
+      //       }
+      //       prompt();
+      //     });
 
-          return;
-        }
-      }
+      //     return;
+      //   }
+      // }
 
       if (command === 'echo') {
         console.log(args.join(' '));
