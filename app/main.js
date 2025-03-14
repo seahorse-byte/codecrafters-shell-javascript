@@ -30,27 +30,16 @@ function prompt() {
     } else {
       const [command, ...args] = answer.split(' ');
 
-      // for (const p of paths) {
-      //   const fullPath = path.join(p, args[0]);
-
-      //   if (fullPath) {
-      //     isBuiltin(fullPath, builtin => {
-      //       if (builtin) {
-      //         console.log(`${fullPath} is a shell builtin`);
-      //       } else {
-      //         console.log(`${fullPath} not found`);
-      //       }
-      //       prompt();
-      //     });
-
-      //     return;
-      //   }
-      // }
-
       if (command === 'echo') console.log(args.join(' '));
 
       if (command === 'type') {
         const [subCommand] = args;
+
+        if (['echo', 'type'].includes(subCommand)) {
+          console.log(`${subCommand} is a shell builtin`);
+          prompt();
+          return;
+        }
 
         const paths = process.env.PATH.split(path.delimiter);
 
@@ -64,14 +53,14 @@ function prompt() {
           }
         }
 
-        isBuiltin(subCommand, builtin => {
-          if (builtin) {
-            console.log(`${subCommand} is a shell builtin`);
-          } else {
-            console.log(`${subCommand} not found`);
-          }
-          prompt();
-        });
+        // isBuiltin(subCommand, builtin => {
+        //   if (builtin) {
+        //     console.log(`${subCommand} is a shell builtin`);
+        //   } else {
+        //     console.log(`${subCommand} not found`);
+        //   }
+        //   prompt();
+        // });
 
         return;
       }
