@@ -32,8 +32,6 @@ function prompt() {
 
       const paths = process.env.PATH.split(path.delimiter);
 
-      let found = false;
-
       if (command === 'echo') {
         console.log(args.join(' '));
       } else if (command === 'type') {
@@ -41,37 +39,14 @@ function prompt() {
 
         for (const p of paths) {
           const fullPath = path.join(p, subCommand);
-          console.log(
-            'fs.statSync(fullPath).isFile()',
-            fs.statSync(fullPath).isFile(),
-          );
 
           if (fs.existsSync(fullPath)) {
-            console.log('Is file');
             console.log(`${subCommand} is ${fullPath}`);
-            found = true;
-            break;
-          }
-
-          if (!found) {
-            console.log(`${subCommand} not found`);
             prompt();
             return;
           }
-
-          // if (fullPath) {
-          //   isBuiltin(fullPath, builtin => {
-          //     if (builtin) {
-          //       console.log(`${fullPath} is a shell builtin`);
-          //     } else {
-          //       console.log(`${fullPath} not found`);
-          //     }
-          //     prompt();
-          //   });
-
-          //   return;
-          // }
         }
+
         isBuiltin(subCommand, builtin => {
           if (builtin) {
             console.log(`${subCommand} is a shell builtin`);
