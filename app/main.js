@@ -33,6 +33,7 @@ function prompt() {
       if (command === 'echo') {
         console.log(args.join(' '));
         prompt();
+        return;
       }
 
       if (command === 'type') {
