@@ -35,7 +35,7 @@ function prompt() {
       if (command === 'type') {
         const [subCommand] = args;
 
-        if (['echo', 'type'].includes(subCommand)) {
+        if (['echo', 'type', 'exit'].includes(subCommand)) {
           console.log(`${subCommand} is a shell builtin`);
           prompt();
           return;
