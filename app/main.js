@@ -58,6 +58,8 @@ function prompt() {
           }
         }
 
+        console.log(`${answer}: not found`);
+
         // isBuiltin(subCommand, builtin => {
         //   if (builtin) {
         //     console.log(`${subCommand} is a shell builtin`);
