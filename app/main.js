@@ -40,7 +40,7 @@ function prompt() {
         for (const p of paths) {
           const fullPath = path.join(p, subCommand);
 
-          if (fs.existsSync(fullPath)) {
+          if (fs.existsSync(fullPath) && fs.existsSync(fullPath).isFile()) {
             console.log(`${subCommand} is ${fullPath}`);
             prompt();
             return;
