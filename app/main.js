@@ -30,7 +30,10 @@ function prompt() {
     } else {
       const [command, ...args] = answer.split(' ');
 
-      if (command === 'echo') console.log(args.join(' '));
+      if (command === 'echo') {
+        console.log(args.join(' '));
+        prompt();
+      }
 
       if (command === 'type') {
         const [subCommand] = args;
