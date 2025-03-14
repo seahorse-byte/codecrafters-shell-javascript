@@ -49,8 +49,8 @@ function prompt() {
           if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
             console.log('Is file');
             console.log(`${subCommand} is ${fullPath}`);
-            prompt();
-            return;
+            found = true;
+            break;
           }
 
           if (!found) {
