@@ -58,7 +58,7 @@ function prompt() {
           }
         }
 
-        console.log(`${answer}: not found`);
+        console.log(`${subCommand}: not found`);
 
         // isBuiltin(subCommand, builtin => {
         //   if (builtin) {
