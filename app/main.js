@@ -9,6 +9,14 @@ const rl = readline.createInterface({
 });
 
 function isBuiltin(command, callback) {
+  let found = false;
+
+  if (fs.existsSync(command)) {
+    console.log(`${command} is ${fullPath}`);
+    found = true;
+    return;
+  }
+
   exec(`type ${command}`, (error, stdout, stderr) => {
     if (error) {
       callback(false);
@@ -45,6 +53,19 @@ function prompt() {
             prompt();
             return;
           }
+        }
+
+        if (command) {
+          isBuiltin(command, builtin => {
+            if (builtin) {
+              console.log(`${fullPath} is a shell builtin`);
+            } else {
+              console.log(`${fullPath} not found`);
+            }
+            prompt();
+          });
+
+          return;
         }
 
         isBuiltin(subCommand, builtin => {
