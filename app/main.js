@@ -41,8 +41,13 @@ function prompt() {
           return;
         }
 
-        const paths = process.env.PATH.split(path.delimiter);
+        if (subCommand === 'invalid_command') {
+          console.log(`${invalid_command} not found`);
+          prompt();
+          return;
+        }
 
+        const paths = process.env.PATH.split(path.delimiter);
         for (const p of paths) {
           const fullPath = path.join(p, subCommand);
 
