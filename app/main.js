@@ -29,8 +29,6 @@ function prompt() {
     } else {
       const [command, ...args] = answer.split(' ');
 
-      const paths = process.env.PATH.split(path.delimiter);
-
       // for (const p of paths) {
       //   const fullPath = path.join(p, args[0]);
 
@@ -53,6 +51,7 @@ function prompt() {
       } else if (command === 'type') {
         const [subCommand] = args;
 
+        const paths = process.env.PATH.split(path.delimiter);
         for (const p of paths) {
           const fullPath = path.join(p, subCommand);
 
