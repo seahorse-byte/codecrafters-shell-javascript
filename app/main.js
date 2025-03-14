@@ -69,6 +69,7 @@ function prompt() {
         //   prompt();
         // });
 
+        prompt();
         return;
       }
 
