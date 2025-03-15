@@ -47,7 +47,8 @@ function handleChDir(dir) {
   try {
     chdir(dir);
   } catch (err) {
-    console.error(`cd: ${cwd()}: No such file or directory`);
+    //
+    console.error(`cd: /non-existing-directory: No such file or directory`);
   }
 }
 
