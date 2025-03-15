@@ -13,7 +13,7 @@ function handleEcho(args) {
   // preserve the literal value of the arguments enclosed in single quotes
   const echoArgs = args.join(' ').match(/'[^']*'|[^ ]+/g);
 
-  console.log('🚀 ~ handleEcho ~ echoArgs:', echoArgs);
+  // console.log('🚀 ~ handleEcho ~ echoArgs:', echoArgs);
 
   echoArgs.forEach(arg => {
     console.log(arg.replace(/'/g, ''));
