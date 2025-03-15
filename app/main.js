@@ -11,12 +11,15 @@ const rl = readline.createInterface({
 
 // Function to handle the 'echo' command
 function handleEcho(args) {
-  if (args[0].startsWith('"') && args[args.length - 1].endsWith('"')) {
-    console.log(args.join(" '  ' ").slice(1, -1));
-    return;
+  const output = args.join(' ');
+  if (
+    (output.startsWith("'") && output.endsWith("'")) ||
+    (output.startsWith('"') && output.endsWith('"'))
+  ) {
+    console.log(output.slice(1, -1));
+  } else {
+    console.log(output);
   }
-
-  console.log(args.join(' '));
 }
 
 // Function to handle the 'type' command
