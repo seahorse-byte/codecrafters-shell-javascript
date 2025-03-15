@@ -44,7 +44,11 @@ function handlePwd() {
 // Function to handle the 'cd' command
 function handleChDir(dir) {
   // cd without arguments should change to the home directory
-  chdir(dir);
+  try {
+    chdir(dir);
+  } catch (err) {
+    console.error(`${err}: No such: ${err}`);
+  }
 }
 
 // Function to prompt the user for input
