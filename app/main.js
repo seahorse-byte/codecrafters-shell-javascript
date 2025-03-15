@@ -150,7 +150,7 @@ function prompt() {
         handleType(args);
         break;
       default:
-        exec(`${command} ${agrs[0]}`, (error, stdout) => {
+        exec(`${command} ${args[0]}`, (error, stdout) => {
           if (error) {
             console.log(`${command}: command not found`);
             return;
