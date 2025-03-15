@@ -10,16 +10,23 @@ const rl = readline.createInterface({
 });
 
 function handleEcho(args) {
-  // preserve the literal value of the arguments enclosed in single quotes
-  const echoArgs = args.join(' ').match(/'[^']*'|[^ ]+/g);
+  // Join the arguments into a single string
+  const inputString = args.join(' ');
 
-  // console.log('🚀 ~ handleEcho ~ echoArgs:', echoArgs);
+  // Match single-quoted strings (including adjacent ones) or non-space sequences
+  const echoArgs = inputString.match(/'[^']*(?:''[^']*)*'|[^ ]+/g);
 
-  echoArgs.forEach((item, index, arr) => {
-    arr[index] = item.replace(/'/g, '');
-  });
+  // Remove single quotes from each token
+  if (echoArgs) {
+    echoArgs.forEach((item, index, arr) => {
+      arr[index] = item.replace(/'/g, '');
+    });
 
-  console.log(echoArgs.join(' '));
+    // Join the cleaned tokens and log the result
+    console.log(echoArgs.join(' '));
+  } else {
+    console.log(''); // Handle empty input
+  }
 }
 
 // Function to handle the 'type' command
