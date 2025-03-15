@@ -135,7 +135,7 @@ function handleType(args) {
 
 // Function to prompt the user for input
 function prompt() {
-  rl.question('$ ', answer => {
+  rl.question('', answer => {
     if (answer === 'exit 0') {
       process.exit(0);
     }
@@ -158,7 +158,7 @@ function prompt() {
           if (stdout.includes('builtin')) {
             console.log(`${command} is a shell builtin`);
           } else {
-            console.log('Program was passed 2 args (including program name)');
+            console.log('Program was passed 2 args (including program name).');
             return;
           }
         });
