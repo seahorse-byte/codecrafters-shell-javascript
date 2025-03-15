@@ -12,15 +12,15 @@ const rl = readline.createInterface({
 // Function to handle the 'echo' command
 function handleEcho(args) {
   console.log(args);
-  if (args[0].startsWith('"') && args[args.length - 1].endsWith('"')) {
-    args.forEach((item, index, arr) => {
-      args[index] = item.replace(/'/g, '');
-    });
-    console.log(args.join(' '));
-    return;
-  }
+  // if (args[0].startsWith('"') && args[args.length - 1].endsWith('"')) {
+  //   args.forEach((item, index, arr) => {
+  //     args[index] = item.replace(/'/g, '');
+  //   });
+  //   console.log(args.join(' '));
+  //   return;
+  // }
 
-  console.log(args.join(' '));
+  // console.log(args.join(' '));
 }
 
 // Function to handle the 'type' command
