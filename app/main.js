@@ -35,6 +35,11 @@ function handleType(args) {
   console.log(`${subCommand}: not found`);
 }
 
+// Function to handle the 'pwd' command
+function handlePwd() {
+  console.log(process.cwd());
+}
+
 // Function to prompt the user for input
 function prompt() {
   rl.question('$ ', answer => {
@@ -50,6 +55,9 @@ function prompt() {
         break;
       case 'type':
         handleType(args);
+        break;
+      case 'pwd':
+        handlePwd();
         break;
       default:
         exec(`${command} ${args.join(' ')}`, (error, stdout, stderr) => {
