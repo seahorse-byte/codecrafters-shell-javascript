@@ -11,7 +11,10 @@ const rl = readline.createInterface({
 
 // Function to handle the 'echo' command
 function handleEcho(args) {
-  console.log(args.join('" "'));
+  args.forEach((item, index, arr) => {
+    arr[index] = item.replace(/'/g, '');
+  });
+  console.log(args.join(' '));
 
   // if (args[0].startsWith('"') && args[args.length - 1].endsWith('"')) {
   //   args.forEach((item, index, arr) => {
