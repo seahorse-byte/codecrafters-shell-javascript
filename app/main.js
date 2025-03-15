@@ -14,7 +14,7 @@ function handleEcho(args) {
   args.forEach((item, index, arr) => {
     arr[index] = item.replace(/'/g, '');
   });
-  console.log(args.join(' '));
+  console.log(args.join(' ').trim());
 
   // if (args[0].startsWith('"') && args[args.length - 1].endsWith('"')) {
   //   args.forEach((item, index, arr) => {
