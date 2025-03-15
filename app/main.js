@@ -17,7 +17,7 @@ function handleEcho(args) {
 function handleType(args) {
   const [subCommand] = args;
 
-  if (['echo', 'type', 'exit'].includes(subCommand)) {
+  if (['echo', 'type', 'exit', 'pwd'].includes(subCommand)) {
     console.log(`${subCommand} is a shell builtin`);
     return;
   }
