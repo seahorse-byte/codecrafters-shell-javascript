@@ -150,18 +150,18 @@ function prompt() {
         handleType(args);
         break;
       default:
-        exec(fullCommand, (error, stdout) => {
-          if (error) {
-            console.log(`${command}: command not found`);
-            return;
-          }
-          if (stdout.includes('builtin')) {
-            console.log(`${command} is a shell builtin`);
-          } else {
-            execFileSync(command, [args[0]], { encoding: 'utf8' });
-            console.log('Program was passed 2 args (including program name).');
-          }
-        });
+        execFileSync(command, [args[0]], { encoding: 'utf8' });
+        console.log('Program was passed 2 args (including program name).');
+        // exec(fullCommand, (error, stdout) => {
+        //   if (error) {
+        //     console.log(`${command}: command not found`);
+        //     return;
+        //   }
+        //   if (stdout.includes('builtin')) {
+        //     console.log(`${command} is a shell builtin`);
+        //   } else {
+        //   }
+        // });
         break;
     }
 
