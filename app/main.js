@@ -11,6 +11,7 @@ const rl = readline.createInterface({
 
 // Function to handle the 'echo' command
 function handleEcho(args) {
+  console.log('🚀 ~ handleEcho ~ args:', args);
   //signel quotes and double quotes
   if (args[0].startsWith('"') && args[args.length - 1].endsWith('"')) {
     console.log(args.join(' ').slice(1, -1));
