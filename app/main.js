@@ -150,7 +150,17 @@ function prompt() {
         handleType(args);
         break;
       default:
-        console.log(`${command}: command not found`);
+        exec(`type ${command}`, (error, stdout) => {
+          if (error) {
+            console.log(`${command}: command not found`);
+            return;
+          }
+          if (stdout.includes('builtin')) {
+            console.log(`${command} is a shell builtin`);
+          } else {
+            console.log(`${command}: command not found`);
+          }
+        });
         break;
     }
 
