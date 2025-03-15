@@ -18,7 +18,7 @@ function handleEcho(args) {
   ) {
     console.log(output.slice(1, -1));
   } else {
-    console.log(output);
+    console.log(output.join(''));
   }
 }
 
