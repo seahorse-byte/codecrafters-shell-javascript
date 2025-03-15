@@ -158,7 +158,8 @@ function prompt() {
           if (stdout.includes('builtin')) {
             console.log(`${command} is a shell builtin`);
           } else {
-            console.log(`Program was passed 2 args (including program name).`);
+            console.log('Program was passed 2 args (including program name)');
+            return;
           }
         });
         break;
