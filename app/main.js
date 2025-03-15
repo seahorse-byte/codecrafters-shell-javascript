@@ -45,6 +45,10 @@ function handlePwd() {
 function handleChDir(dir) {
   // cd without arguments should change to the home directory
   try {
+    if (dir === '~') {
+      chdir(process.env.HOME);
+      return;
+    }
     chdir(dir);
   } catch (err) {
     console.error(`cd: /non-existing-directory: No such file or directory`);
