@@ -11,6 +11,7 @@ const rl = readline.createInterface({
 
 // Function to handle the 'echo' command
 function handleEcho(args) {
+  // will this already work?
   console.log(args.join(' '));
 }
 
