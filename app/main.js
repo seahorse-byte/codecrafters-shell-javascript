@@ -14,14 +14,14 @@ function handleEcho(args) {
   const output = args.join(' ');
   console.log('output', output);
 
-  if (
-    (output.startsWith("'") && output.endsWith("'")) ||
-    (output.startsWith('"') && output.endsWith('"'))
-  ) {
-    console.log(output.slice(1, -1));
-  } else {
-    console.log(output);
-  }
+  // if (
+  //   (output.startsWith("'") && output.endsWith("'")) ||
+  //   (output.startsWith('"') && output.endsWith('"'))
+  // ) {
+  //   console.log(output.slice(1, -1));
+  // } else {
+  //   console.log(output);
+  // }
 }
 
 // Function to handle the 'type' command
