@@ -40,6 +40,12 @@ function handlePwd() {
   console.log(process.cwd());
 }
 
+// Function to handle the 'cd' command
+function handleChDir(dir) {
+  // cd without arguments should change to the home directory
+  process.chdir(dir);
+}
+
 // Function to prompt the user for input
 function prompt() {
   rl.question('$ ', answer => {
@@ -58,6 +64,9 @@ function prompt() {
         break;
       case 'pwd':
         handlePwd();
+        break;
+      case 'cd':
+        handleChDir(args[0]);
         break;
       default:
         exec(`${command} ${args.join(' ')}`, (error, stdout, stderr) => {
