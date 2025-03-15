@@ -135,12 +135,15 @@ function handleType(args) {
 
 // Function to prompt the user for input
 function prompt() {
-  rl.question('', answer => {
+  rl.question('$ ', answer => {
     if (answer === 'exit 0') {
       process.exit(0);
     }
 
     const [command, ...args] = answer.split(' ');
+
+    const fullCommand = `${command} ${args[0]}`;
+    console.log('fullCommand', fullCommand);
 
     switch (command) {
       case 'echo':
