@@ -142,8 +142,6 @@ function prompt() {
 
     const [command, ...args] = answer.split(' ');
 
-    const fullCommand = `${command} ${args[0]}`;
-
     switch (command) {
       case 'echo':
         handleEcho(args);
@@ -160,15 +158,14 @@ function prompt() {
           if (stdout.includes('builtin')) {
             console.log(`${command} is a shell builtin`);
           } else {
-            console.log(stdout);
-            // console.log('Program was passed 2 args (including program name).');
-            return;
+            execFileSync(command, [args[0]], { encoding: 'utf8' });
+            console.log('Program was passed 2 args (including program name).');
           }
         });
         break;
     }
 
-    // prompt();
+    prompt();
   });
 }
 
