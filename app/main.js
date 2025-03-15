@@ -15,13 +15,11 @@ function handleEcho(args) {
 
   // console.log('🚀 ~ handleEcho ~ echoArgs:', echoArgs);
 
-  echoArgs.forEach(arg => {
-    console.log(arg.replace(/'/g, ''));
+  echoArgs.forEach((item, index, arr) => {
+    arr[index] = item.replace(/'/g, '');
   });
 
-  // args.forEach((item, index, arr) => {
-  //   arr[index] = item.replace(/'/g, '');
-  // });
+  console.log(echoArgs.join(' '));
 }
 
 // Function to handle the 'type' command
