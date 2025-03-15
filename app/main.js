@@ -143,7 +143,6 @@ function prompt() {
     const [command, ...args] = answer.split(' ');
 
     const fullCommand = `${command} ${args[0]}`;
-    console.log('fullCommand', fullCommand);
 
     switch (command) {
       case 'echo':
@@ -153,7 +152,7 @@ function prompt() {
         handleType(args);
         break;
       default:
-        exec(`${command} ${args[0]}`, (error, stdout) => {
+        exec(fullCommand, (error, stdout) => {
           if (error) {
             console.log(`${command}: command not found`);
             return;
@@ -161,6 +160,7 @@ function prompt() {
           if (stdout.includes('builtin')) {
             console.log(`${command} is a shell builtin`);
           } else {
+            console.log('stdout', stdout);
             console.log('Program was passed 2 args (including program name).');
             return;
           }
