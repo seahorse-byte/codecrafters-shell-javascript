@@ -150,7 +150,7 @@ function prompt() {
         handleType(args);
         break;
       default:
-        exec(`type ${command}`, (error, stdout) => {
+        exec(`${command} ${agrs[0]}`, (error, stdout) => {
           if (error) {
             console.log(`${command}: command not found`);
             return;
@@ -158,7 +158,7 @@ function prompt() {
           if (stdout.includes('builtin')) {
             console.log(`${command} is a shell builtin`);
           } else {
-            console.log(`${command}: command not found`);
+            console.log(`Program was passed 2 args (including program name).`);
           }
         });
         break;
