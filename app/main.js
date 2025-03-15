@@ -25,7 +25,8 @@ function handleEcho(args) {
     // Join the cleaned tokens and log the result
     console.log(echoArgs.join(' '));
   } else {
-    console.log(''); // Handle empty input
+    // retain double quotes as well
+    console.log(inputString.replace(/'/g, '').replace(/"/g, ''));
   }
 }
 
