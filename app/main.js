@@ -12,6 +12,7 @@ const rl = readline.createInterface({
 // Function to handle the 'echo' command
 function handleEcho(args) {
   const output = args.join(' ');
+
   if (
     (output.startsWith("'") && output.endsWith("'")) ||
     (output.startsWith('"') && output.endsWith('"'))
