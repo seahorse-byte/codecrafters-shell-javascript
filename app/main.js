@@ -56,9 +56,9 @@ function prompt() {
           if (error) {
             console.error(`${command}: command not found`);
           } else {
-            console.log(stdout);
+            console.log(stdout.trim());
             if (stderr) {
-              console.error(stderr);
+              console.error(stderr.trim());
             }
           }
           prompt();
