@@ -2,6 +2,7 @@ const readline = require('readline');
 const { exec } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+const { chdir, cwd } = require('node:process');
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -37,13 +38,13 @@ function handleType(args) {
 
 // Function to handle the 'pwd' command
 function handlePwd() {
-  console.log(process.cwd());
+  console.log(cwd());
 }
 
 // Function to handle the 'cd' command
 function handleChDir(dir) {
   // cd without arguments should change to the home directory
-  process.chdir(dir);
+  chdir(dir);
 }
 
 // Function to prompt the user for input
