@@ -11,17 +11,16 @@ const rl = readline.createInterface({
 
 // Function to handle the 'echo' command
 function handleEcho(args) {
-  const output = args.join(' ');
-  console.log(output);
+  //signel quotes and double quotes
+  if (args[0].startsWith('"') && args[args.length - 1].endsWith('"')) {
+    args.forEach((item, index, arr) => {
+      args[index] = item.replace(/'/g, '');
+    });
+    console.log(args.join(' '));
+    return;
+  }
 
-  // if (
-  //   (output.startsWith("'") && output.endsWith("'")) ||
-  //   (output.startsWith('"') && output.endsWith('"'))
-  // ) {
-  //   console.log(output.slice(1, -1));
-  // } else {
-  //   console.log(output);
-  // }
+  console.log(args.join(' '));
 }
 
 // Function to handle the 'type' command
