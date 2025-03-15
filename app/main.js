@@ -9,22 +9,16 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-// Function to handle the 'echo' command
 function handleEcho(args) {
-  args.forEach((item, index, arr) => {
-    arr[index] = item.replace(/'/g, '');
+  // preserve the literal value of the arguments enclosed in single quotes
+  const echoArgs = args.join(' ').match(/'[^']*'|[^ ]+/g);
+  echoArgs.forEach(arg => {
+    console.log(arg.replace(/'/g, ''));
   });
-  console.log(args.join(' ').trim());
 
-  // if (args[0].startsWith('"') && args[args.length - 1].endsWith('"')) {
-  //   args.forEach((item, index, arr) => {
-  //     args[index] = item.replace(/'/g, '');
-  //   });
-  //   console.log(args.join(' '));
-  //   return;
-  // }
-
-  // console.log(args.join(' '));
+  // args.forEach((item, index, arr) => {
+  //   arr[index] = item.replace(/'/g, '');
+  // });
 }
 
 // Function to handle the 'type' command
