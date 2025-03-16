@@ -45,10 +45,10 @@ function handleEcho(args) {
     echoArgs.forEach((item, index, arr) => {
       if (item.startsWith('"') && item.endsWith('"')) {
         // Remove only the surrounding double quotes for double-quoted strings
-        arr[index] = item.slice(1, -1);
+        arr[index] = item.slice(1, -1).replace(/""/g, '');
       } else if (item.startsWith("'") && item.endsWith("'")) {
         // Remove only the surrounding single quotes for single-quoted strings
-        arr[index] = item.slice(1, -1);
+        arr[index] = item.slice(1, -1).replace(/''/g, '');
       } else {
         // For unquoted tokens, remove all single and double quotes
         arr[index] = item.replace(/'/g, '').replace(/"/g, '');
