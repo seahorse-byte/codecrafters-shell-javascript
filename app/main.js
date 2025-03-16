@@ -35,8 +35,10 @@ function handleEcho(args) {
   // Join the arguments into a single string
   const inputString = args.join(' ');
 
-  // Match single-quoted strings, double-quoted strings, or non-space sequences
-  const echoArgs = inputString.match(/'[^']*(?:''[^']*)*'|"[^"]*"|[^ ]+/g);
+  // Match single-quoted strings, double-quoted strings (including adjacent ones), or non-space sequences
+  const echoArgs = inputString.match(
+    /'[^']*(?:''[^']*)*'|"[^"]*(?:""[^"]*)*"|[^ ]+/g,
+  );
 
   // Remove single quotes and double quotes from each token
   if (echoArgs) {
