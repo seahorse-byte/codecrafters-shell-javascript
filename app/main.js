@@ -40,11 +40,19 @@ function handleEcho(args) {
     /'[^']*(?:''[^']*)*'|"[^"]*(?:""[^"]*)*"|[^ ]+/g,
   );
 
-  // Remove single quotes and double quotes from each token
+  // Process each token
   if (echoArgs) {
     echoArgs.forEach((item, index, arr) => {
-      // Remove single quotes and double quotes
-      arr[index] = item.replace(/'/g, '').replace(/"/g, '');
+      if (item.startsWith('"') && item.endsWith('"')) {
+        // Remove only the surrounding double quotes for double-quoted strings
+        arr[index] = item.slice(1, -1);
+      } else if (item.startsWith("'") && item.endsWith("'")) {
+        // Remove only the surrounding single quotes for single-quoted strings
+        arr[index] = item.slice(1, -1);
+      } else {
+        // For unquoted tokens, remove all single and double quotes
+        arr[index] = item.replace(/'/g, '').replace(/"/g, '');
+      }
     });
 
     // Join the cleaned tokens and log the result
