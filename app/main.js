@@ -9,28 +9,6 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-// function handleEcho(args) {
-//   // retain double quotes as well
-
-//   // Join the arguments into a single string
-//   const inputString = args.join(' ');
-
-//   // Match single-quoted strings (including adjacent ones) or non-space sequences
-//   const echoArgs = inputString.match(/'[^']*(?:''[^']*)*'|[^ ]+/g);
-
-//   // Remove single quotes from each token
-//   if (echoArgs) {
-//     echoArgs.forEach((item, index, arr) => {
-//       arr[index] = item.replace(/'/g, '');
-//     });
-
-//     // Join the cleaned tokens and log the result
-//     console.log(echoArgs.join(' '));
-//   } else {
-//     console.log(''); // Handle empty input
-//   }
-// }
-
 function handleEcho(args) {
   // Join the arguments into a single string
   const inputString = args.join(' ');
