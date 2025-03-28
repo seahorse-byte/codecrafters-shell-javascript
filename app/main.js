@@ -29,10 +29,7 @@ function handleEcho(args) {
         arr[index] = item.slice(1, -1).replace(/''/g, '');
       } else {
         // For unquoted tokens, remove all single and double quotes
-        arr[index] = item
-          .replace(/'/g, '')
-          .replace(/"/g, '')
-          .replaceAll('\\', '');
+        arr[index] = item.replace(/'/g, '').replace(/"/g, '');
       }
     });
 
