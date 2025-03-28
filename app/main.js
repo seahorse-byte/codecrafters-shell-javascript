@@ -9,62 +9,79 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
+// --- Updated handleEcho Function ---
 function handleEcho(args) {
-  // Join the arguments into a single string
+  // Join the arguments back into a single string. This is needed because
+  // the initial naive `split(' ')` doesn't respect quotes/escapes.
   const inputString = args.join(' ');
 
-  // Match single-quoted strings, double-quoted strings, or unquoted sequences
-  const echoArgs = inputString.match(/'[^']*'|"[^"]*"|[^ ]+/g);
+  // Regex to match:
+  // 1. Single-quoted strings ('...')
+  // 2. Double-quoted strings ("...")
+  // 3. Sequences of non-whitespace characters (\S+)
+  // This regex helps segment the joined string but isn't a perfect shell parser.
+  const tokens = inputString.match(/'[^']*'|"[^"]*"|\S+/g);
 
-  if (echoArgs) {
-    echoArgs.forEach((item, index, arr) => {
-      if (item.startsWith('"') && item.endsWith('"')) {
-        // Remove surrounding double quotes and handle escaped characters
-        arr[index] = item.slice(1, -1).replace(/\\(.)/g, '$1'); // Interpret backslashes as escape characters
-      } else if (item.startsWith("'") && item.endsWith("'")) {
-        // Remove surrounding single quotes (no escape handling inside single quotes)
-        arr[index] = item.slice(1, -1);
+  if (tokens) {
+    const processedTokens = tokens.map(token => {
+      if (token.startsWith("'") && token.endsWith("'")) {
+        // Single quotes: Remove outer quotes, treat content literally.
+        return token.slice(1, -1);
+      } else if (token.startsWith('"') && token.endsWith('"')) {
+        // Double quotes: Remove outer quotes, process backslash escapes inside.
+        // \\c becomes c
+        return token.slice(1, -1).replace(/\\(.)/g, '$1');
       } else {
-        // Handle backslashes for unquoted tokens, including escaped spaces
-        arr[index] = item
-          .replace(/\\ /g, ' ')
-          .replace(/\\\\/g, '\\')
-          .replace(/\\(.)/g, '$1');
+        // Unquoted: Process backslash escapes.
+        // \\c becomes c
+        return token.replace(/\\(.)/g, '$1');
       }
     });
-
-    console.log(echoArgs.join(' '));
+    // Join the processed tokens with a single space for the final output.
+    console.log(processedTokens.join(' '));
   } else {
-    // If no matches, handle backslashes in the input string
-    console.log(
-      inputString
-        .replace(/\\ /g, ' ')
-        .replace(/\\\\/g, '\\')
-        .replace(/\\(.)/g, '$1'),
-    );
+    // If inputString was empty or only whitespace, print a newline.
+    console.log('');
   }
 }
+// --- End of Updated handleEcho Function ---
 
 // Function to handle the 'type' command
 function handleType(args) {
   const [subCommand] = args;
 
-  if (['echo', 'type', 'exit', 'pwd'].includes(subCommand)) {
+  // Check builtins first
+  const builtins = ['echo', 'type', 'exit', 'pwd', 'cd'];
+  if (builtins.includes(subCommand)) {
     console.log(`${subCommand} is a shell builtin`);
     return;
   }
 
+  // Check PATH environment variable
   const paths = process.env.PATH.split(path.delimiter);
+  let found = false;
   for (const p of paths) {
-    const fullPath = path.join(p, subCommand);
-
-    if (fs.existsSync(fullPath)) {
-      console.log(`${subCommand} is ${fullPath}`);
-      return;
+    // Handle potential empty paths in the PATH variable
+    if (!p) continue;
+    try {
+      const fullPath = path.join(p, subCommand);
+      // Check if the file exists and is executable (though fs.existsSync is often sufficient)
+      if (fs.existsSync(fullPath)) {
+        // Optional: Check execute permissions if needed (more complex across OS)
+        // fs.accessSync(fullPath, fs.constants.X_OK);
+        console.log(`${subCommand} is ${fullPath}`);
+        found = true;
+        break; // Stop searching once found
+      }
+    } catch (err) {
+      // Ignore errors like permission denied for certain directories in PATH
+      // console.error(`Error accessing path ${p}: ${err.message}`);
     }
   }
 
-  console.log(`${subCommand}: not found`);
+  if (!found) {
+    console.log(`${subCommand}: not found`);
+  }
 }
 
 // Function to handle the 'pwd' command
@@ -73,57 +90,113 @@ function handlePwd() {
 }
 
 // Function to handle the 'cd' command
-function handleChDir(dir) {
-  // cd without arguments should change to the home directory
-  try {
-    if (dir === '~') {
-      chdir(process.env.HOME);
+function handleChDir(args) {
+  // Expecting zero or one argument for cd
+  const dir = args[0];
+
+  let targetDir;
+  if (!dir || dir === '~') {
+    // If no argument or tilde, change to home directory
+    targetDir = process.env.HOME || process.env.USERPROFILE; // HOME for Unix, USERPROFILE for Windows
+    if (!targetDir) {
+      console.error(`cd: HOME directory not set`);
       return;
     }
-    chdir(dir);
+  } else {
+    targetDir = dir;
+  }
+
+  try {
+    chdir(targetDir);
   } catch (err) {
-    console.error(`cd: /non-existing-directory: No such file or directory`);
+    // Check the type of error if possible, provide standard message
+    if (err.code === 'ENOENT') {
+      console.error(`cd: ${targetDir}: No such file or directory`);
+    } else if (err.code === 'ENOTDIR') {
+      console.error(`cd: ${targetDir}: Not a directory`);
+    } else {
+      console.error(
+        `cd: Error changing directory to ${targetDir}: ${err.message}`,
+      );
+    }
   }
 }
 
 // Function to prompt the user for input
 function prompt() {
   rl.question('$ ', answer => {
-    if (answer === 'exit 0') {
-      process.exit(0);
+    // Trim whitespace from the input
+    const trimmedAnswer = answer.trim();
+    if (trimmedAnswer === '') {
+      prompt(); // If empty line, just prompt again
+      return;
     }
 
-    const [command, ...args] = answer.split(' ');
+    // Basic command parsing (splits by space, doesn't handle quotes/escapes during split)
+    const [command, ...args] = trimmedAnswer.split(' ');
+
+    // Handle exit command
+    if (command === 'exit' && args[0] === '0') {
+      process.exit(0);
+    }
 
     switch (command) {
       case 'echo':
         handleEcho(args);
+        prompt(); // Call prompt again for next command
         break;
       case 'type':
         handleType(args);
+        prompt();
         break;
       case 'pwd':
         handlePwd();
+        prompt();
         break;
       case 'cd':
-        handleChDir(args[0]);
+        handleChDir(args); // Pass the arguments array
+        prompt();
         break;
       default:
-        exec(`${command} ${args.join(' ')}`, (error, stdout, stderr) => {
+        // Execute external command
+        // Reconstruct the command string ensuring args are handled reasonably
+        // Note: This simplistic reconstruction might still have issues with complex args containing spaces/quotes
+        const fullCmd = [command, ...args].join(' ');
+        exec(fullCmd, (error, stdout, stderr) => {
           if (error) {
-            console.error(`${command}: command not found`);
+            // Provide a standard "command not found" type error
+            // stderr might contain more specific info, but error.code is often useful
+            // e.g., ENOENT for command not found on POSIX systems
+            if (
+              error.code === 127 ||
+              (error.code === 'ENOENT' && error.syscall.includes('spawn'))
+            ) {
+              console.log(`${command}: command not found`);
+            } else {
+              // Print stderr if available and seems relevant
+              if (stderr) {
+                console.error(stderr.trim());
+              } else {
+                console.error(`exec error: ${error.message}`); // Fallback error
+              }
+            }
           } else {
-            console.log(stdout.trim());
+            // Print stdout if it's not empty
+            if (stdout) {
+              console.log(stdout.trim());
+            }
+            // Print stderr if it's not empty (some commands use stderr for non-error output)
             if (stderr) {
               console.error(stderr.trim());
             }
           }
-          prompt();
+          prompt(); // Prompt for the next command AFTER execution finishes
         });
-        return;
+        // Don't call prompt() here for exec, it's called in the callback
+        break; // Added break statement
     }
 
-    prompt();
+    // Removed redundant prompt() call here, it's called within each case or the exec callback
   });
 }
 
