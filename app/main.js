@@ -25,7 +25,7 @@ function handleEcho(args) {
         // Remove surrounding single quotes (no escape handling inside single quotes)
         arr[index] = item.slice(1, -1);
       } else {
-        // Handle backslashes for unquoted tokens
+        // Handle backslashes for unquoted tokens, including escaped spaces
         arr[index] = item.replace(/\\(.)/g, '$1');
       }
     });
