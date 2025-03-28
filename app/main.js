@@ -26,14 +26,22 @@ function handleEcho(args) {
         arr[index] = item.slice(1, -1);
       } else {
         // Handle backslashes for unquoted tokens, including escaped spaces
-        arr[index] = item.replace(/\\ /g, ' ').replace(/\\(.)/g, '$1');
+        arr[index] = item
+          .replace(/\\ /g, ' ')
+          .replace(/\\\\/g, '\\')
+          .replace(/\\(.)/g, '$1');
       }
     });
 
     console.log(echoArgs.join(' '));
   } else {
     // If no matches, handle backslashes in the input string
-    console.log(inputString.replace(/\\ /g, ' ').replace(/\\(.)/g, '$1'));
+    console.log(
+      inputString
+        .replace(/\\ /g, ' ')
+        .replace(/\\\\/g, '\\')
+        .replace(/\\(.)/g, '$1'),
+    );
   }
 }
 
