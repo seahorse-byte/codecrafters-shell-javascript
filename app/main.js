@@ -9,68 +9,67 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-// --- Updated handleEcho Function (Filter empty args before joining) ---
-function handleEcho(args) {
-  // Filter out empty strings from the initial naive split.
-  // This often happens when multiple spaces are used between arguments.
-  const filteredArgs = args.filter(arg => arg !== '');
+// function handleEcho(args) {
+//   // Filter out empty strings from the initial naive split.
+//   // This often happens when multiple spaces are used between arguments.
+//   const filteredArgs = args.filter(arg => arg !== '');
 
-  // Join the filtered arguments with a SINGLE space.
-  const inputString = filteredArgs.join(' ');
+//   // Join the filtered arguments with a SINGLE space.
+//   const inputString = filteredArgs.join(' ');
 
-  // Now, apply the character-by-character parsing logic to this cleaned inputString.
-  let result = '';
-  let inSingleQuotes = false;
-  let inDoubleQuotes = false;
-  let escaped = false; // Flag for backslash escape active
+//   // Now, apply the character-by-character parsing logic to this cleaned inputString.
+//   let result = '';
+//   let inSingleQuotes = false;
+//   let inDoubleQuotes = false;
+//   let escaped = false; // Flag for backslash escape active
 
-  for (let i = 0; i < inputString.length; i++) {
-    const char = inputString[i];
+//   for (let i = 0; i < inputString.length; i++) {
+//     const char = inputString[i];
 
-    if (escaped) {
-      // Previous char was \ OUTSIDE ANY quotes. Append this char literally.
-      result += char;
-      escaped = false;
-      continue;
-    }
+//     if (escaped) {
+//       // Previous char was \ OUTSIDE ANY quotes. Append this char literally.
+//       result += char;
+//       escaped = false;
+//       continue;
+//     }
 
-    // Only treat backslash as an escape character if NOT inside ANY quotes
-    if (char === '\\' && !inSingleQuotes && !inDoubleQuotes) {
-      escaped = true;
-      continue; // Skip appending the backslash for now
-    }
+//     // Only treat backslash as an escape character if NOT inside ANY quotes
+//     if (char === '\\' && !inSingleQuotes && !inDoubleQuotes) {
+//       escaped = true;
+//       continue; // Skip appending the backslash for now
+//     }
 
-    // Handle quote state changes (these should not be escaped)
-    if (char === "'") {
-      // If we are not inside double quotes, toggle single quotes
-      if (!inDoubleQuotes) {
-        inSingleQuotes = !inSingleQuotes;
-        continue; // Don't append the quote itself
-      }
-      // If inside double quotes, treat single quote literally (fall through)
-    }
-    if (char === '"') {
-      // If we are not inside single quotes, toggle double quotes
-      if (!inSingleQuotes) {
-        inDoubleQuotes = !inDoubleQuotes;
-        continue; // Don't append the quote itself
-      }
-      // If inside single quotes, treat double quote literally (fall through)
-    }
+//     // Handle quote state changes (these should not be escaped)
+//     if (char === "'") {
+//       // If we are not inside double quotes, toggle single quotes
+//       if (!inDoubleQuotes) {
+//         inSingleQuotes = !inSingleQuotes;
+//         continue; // Don't append the quote itself
+//       }
+//       // If inside double quotes, treat single quote literally (fall through)
+//     }
+//     if (char === '"') {
+//       // If we are not inside single quotes, toggle double quotes
+//       if (!inSingleQuotes) {
+//         inDoubleQuotes = !inDoubleQuotes;
+//         continue; // Don't append the quote itself
+//       }
+//       // If inside single quotes, treat double quote literally (fall through)
+//     }
 
-    // If we reach here, the char is not an escape sequence start
-    // and not a quote boundary toggle for its context. Append it.
-    result += char;
-  }
+//     // If we reach here, the char is not an escape sequence start
+//     // and not a quote boundary toggle for its context. Append it.
+//     result += char;
+//   }
 
-  // If the string ends with an unescaped backslash (outside quotes)
-  // it should be appended literally.
-  if (escaped) {
-    result += '\\';
-  }
+//   // If the string ends with an unescaped backslash (outside quotes)
+//   // it should be appended literally.
+//   if (escaped) {
+//     result += '\\';
+//   }
 
-  console.log(result);
-}
+//   console.log(result);
+// }
 // --- End of Updated handleEcho Function ---
 
 // Function to handle the 'type' command
@@ -109,6 +108,57 @@ function handleType(args) {
   if (!found) {
     console.log(`${subCommand}: not found`);
   }
+}
+
+// Recommended code (same as previous response)
+
+function handleEcho(args) {
+  // Filter out empty strings from the initial naive split.
+  const filteredArgs = args.filter(arg => arg !== '');
+
+  // Join the filtered arguments with a SINGLE space.
+  const inputString = filteredArgs.join(' ');
+
+  // Character-by-character parsing logic
+  let result = '';
+  let inSingleQuotes = false;
+  let inDoubleQuotes = false;
+  let escaped = false; // Flag for backslash escape active
+
+  for (let i = 0; i < inputString.length; i++) {
+    const char = inputString[i];
+
+    if (escaped) {
+      result += char;
+      escaped = false;
+      continue;
+    }
+
+    if (char === '\\' && !inSingleQuotes && !inDoubleQuotes) {
+      escaped = true;
+      continue;
+    }
+
+    if (char === "'") {
+      if (!inDoubleQuotes) {
+        inSingleQuotes = !inSingleQuotes;
+        continue;
+      }
+    }
+    if (char === '"') {
+      if (!inSingleQuotes) {
+        inDoubleQuotes = !inDoubleQuotes;
+        continue;
+      }
+    }
+    result += char;
+  }
+
+  if (escaped) {
+    result += '\\';
+  }
+
+  console.log(result);
 }
 
 // Function to handle the 'pwd' command
