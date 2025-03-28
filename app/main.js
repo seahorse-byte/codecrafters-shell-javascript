@@ -9,75 +9,71 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-// --- Updated handleEcho Function (Character-by-Character Parsing) ---
+// --- Updated handleEcho Function (Filter empty args before joining) ---
 function handleEcho(args) {
-  // Join args back, accepting the limitations of the initial split
-  const inputString = args.join(' ');
+  // Filter out empty strings from the initial naive split.
+  // This often happens when multiple spaces are used between arguments.
+  const filteredArgs = args.filter(arg => arg !== '');
 
+  // Join the filtered arguments with a SINGLE space.
+  const inputString = filteredArgs.join(' ');
+
+  // Now, apply the character-by-character parsing logic to this cleaned inputString.
   let result = '';
   let inSingleQuotes = false;
   let inDoubleQuotes = false;
-  let escaped = false; // Flag: indicates the previous character was a relevant backslash
+  let escaped = false; // Flag for backslash escape active
 
   for (let i = 0; i < inputString.length; i++) {
     const char = inputString[i];
 
     if (escaped) {
-      // Previous char was '\' outside single/double quotes.
-      // Append this current character literally.
+      // Previous char was \ OUTSIDE ANY quotes. Append this char literally.
       result += char;
-      escaped = false; // Reset escape flag
+      escaped = false;
       continue;
     }
 
-    // Check for backslash escape trigger:
-    // Only act as escape if NOT within single or double quotes.
+    // Only treat backslash as an escape character if NOT inside ANY quotes
     if (char === '\\' && !inSingleQuotes && !inDoubleQuotes) {
-      escaped = true; // Set flag for the *next* character
-      continue; // Don't append the backslash itself now
+      escaped = true;
+      continue; // Skip appending the backslash for now
     }
 
-    // Check for quote boundaries:
+    // Handle quote state changes (these should not be escaped)
     if (char === "'") {
-      // Toggle single quotes only if not inside double quotes
+      // If we are not inside double quotes, toggle single quotes
       if (!inDoubleQuotes) {
         inSingleQuotes = !inSingleQuotes;
-        continue; // Don't append the quote character itself
+        continue; // Don't append the quote itself
       }
-      // If inside double quotes, treat single quote as literal character (fall through)
+      // If inside double quotes, treat single quote literally (fall through)
     }
-
     if (char === '"') {
-      // Toggle double quotes only if not inside single quotes
+      // If we are not inside single quotes, toggle double quotes
       if (!inSingleQuotes) {
         inDoubleQuotes = !inDoubleQuotes;
-        continue; // Don't append the quote character itself
+        continue; // Don't append the quote itself
       }
-      // If inside single quotes, treat double quote as literal character (fall through)
+      // If inside single quotes, treat double quote literally (fall through)
     }
 
-    // If none of the above conditions caused a 'continue',
-    // append the current character to the result.
-    // This includes:
-    // - Normal characters outside quotes
-    // - All characters inside single quotes (including \)
-    // - All characters inside double quotes (including \), as per "non-quoted backslash" rule
-    // - Quote characters that are nested within the other quote type
+    // If we reach here, the char is not an escape sequence start
+    // and not a quote boundary toggle for its context. Append it.
     result += char;
   }
 
-  // Edge case: if the input ends with a relevant escape character,
-  // it might not have been appended. (This shouldn't happen often with valid escapes).
-  // Let's reconsider: the current logic correctly handles `echo \` -> prints nothing.
-  // If we wanted `echo \` -> print `\`, we'd need:
-  // if (escaped) { result += '\\'; } // Append trailing孤立 backslash if needed
+  // If the string ends with an unescaped backslash (outside quotes)
+  // it should be appended literally.
+  if (escaped) {
+    result += '\\';
+  }
 
   console.log(result);
 }
 // --- End of Updated handleEcho Function ---
 
 // Function to handle the 'type' command
-
 function handleType(args) {
   const [subCommand] = args;
 
