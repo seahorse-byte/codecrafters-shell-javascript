@@ -9,44 +9,75 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-// --- Updated handleEcho Function ---
+// --- Updated handleEcho Function (Character-by-Character Parsing) ---
 function handleEcho(args) {
-  // Join the arguments back into a single string. This is needed because
-  // the initial naive `split(' ')` doesn't respect quotes/escapes.
+  // Join args back, accepting the limitations of the initial split
   const inputString = args.join(' ');
 
-  // Regex to match:
-  // 1. Single-quoted strings ('...')
-  // 2. Double-quoted strings ("...")
-  // 3. Sequences of non-whitespace characters (\S+)
-  // This regex helps segment the joined string but isn't a perfect shell parser.
-  const tokens = inputString.match(/'[^']*'|"[^"]*"|\S+/g);
+  let result = '';
+  let inSingleQuotes = false;
+  let inDoubleQuotes = false;
+  let escaped = false; // Flag: indicates the previous character was a relevant backslash
 
-  if (tokens) {
-    const processedTokens = tokens.map(token => {
-      if (token.startsWith("'") && token.endsWith("'")) {
-        // Single quotes: Remove outer quotes, treat content literally.
-        return token.slice(1, -1);
-      } else if (token.startsWith('"') && token.endsWith('"')) {
-        // Double quotes: Remove outer quotes, process backslash escapes inside.
-        // \\c becomes c
-        return token.slice(1, -1).replace(/\\(.)/g, '$1');
-      } else {
-        // Unquoted: Process backslash escapes.
-        // \\c becomes c
-        return token.replace(/\\(.)/g, '$1');
+  for (let i = 0; i < inputString.length; i++) {
+    const char = inputString[i];
+
+    if (escaped) {
+      // Previous char was '\' outside single/double quotes.
+      // Append this current character literally.
+      result += char;
+      escaped = false; // Reset escape flag
+      continue;
+    }
+
+    // Check for backslash escape trigger:
+    // Only act as escape if NOT within single or double quotes.
+    if (char === '\\' && !inSingleQuotes && !inDoubleQuotes) {
+      escaped = true; // Set flag for the *next* character
+      continue; // Don't append the backslash itself now
+    }
+
+    // Check for quote boundaries:
+    if (char === "'") {
+      // Toggle single quotes only if not inside double quotes
+      if (!inDoubleQuotes) {
+        inSingleQuotes = !inSingleQuotes;
+        continue; // Don't append the quote character itself
       }
-    });
-    // Join the processed tokens with a single space for the final output.
-    console.log(processedTokens.join(' '));
-  } else {
-    // If inputString was empty or only whitespace, print a newline.
-    console.log('');
+      // If inside double quotes, treat single quote as literal character (fall through)
+    }
+
+    if (char === '"') {
+      // Toggle double quotes only if not inside single quotes
+      if (!inSingleQuotes) {
+        inDoubleQuotes = !inDoubleQuotes;
+        continue; // Don't append the quote character itself
+      }
+      // If inside single quotes, treat double quote as literal character (fall through)
+    }
+
+    // If none of the above conditions caused a 'continue',
+    // append the current character to the result.
+    // This includes:
+    // - Normal characters outside quotes
+    // - All characters inside single quotes (including \)
+    // - All characters inside double quotes (including \), as per "non-quoted backslash" rule
+    // - Quote characters that are nested within the other quote type
+    result += char;
   }
+
+  // Edge case: if the input ends with a relevant escape character,
+  // it might not have been appended. (This shouldn't happen often with valid escapes).
+  // Let's reconsider: the current logic correctly handles `echo \` -> prints nothing.
+  // If we wanted `echo \` -> print `\`, we'd need:
+  // if (escaped) { result += '\\'; } // Append trailing孤立 backslash if needed
+
+  console.log(result);
 }
 // --- End of Updated handleEcho Function ---
 
 // Function to handle the 'type' command
+
 function handleType(args) {
   const [subCommand] = args;
 
