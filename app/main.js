@@ -10,37 +10,28 @@ const rl = readline.createInterface({
 });
 
 function handleEcho(args) {
-  // Join the arguments into a single string
   const inputString = args.join(' ');
 
-  // Match single-quoted strings, double-quoted strings (including adjacent ones), or non-space sequences
-  const echoArgs = inputString.match(
-    /'[^']*(?:''[^']*)*'|"[^"]*(?:""[^"]*)*"|[^ ]+/g,
-  );
+  // Match single-quoted strings, double-quoted strings, or unquoted sequences
+  const echoArgs = inputString.match(/'[^']*'|"[^"]*"|[^ ]+/g);
 
-  // Process each token
   if (echoArgs) {
     echoArgs.forEach((item, index, arr) => {
       if (item.startsWith('"') && item.endsWith('"')) {
-        // Remove only the surrounding double quotes for double-quoted strings
-        arr[index] = item.slice(1, -1).replace(/""/g, '').replaceAll('\\', '');
+        // Preserve double quotes
+        arr[index] = item;
       } else if (item.startsWith("'") && item.endsWith("'")) {
-        // Remove only the surrounding single quotes for single-quoted strings
-        arr[index] = item.slice(1, -1).replace(/''/g, '').replaceAll('\\', '');
+        // Preserve single quotes
+        arr[index] = item;
       } else {
-        // For unquoted tokens, remove all single and double quotes
-        arr[index] = item
-          .replace(/'/g, '')
-          .replace(/"/g, '')
-          .replaceAll('\\', '');
+        // For unquoted tokens, remove escape characters
+        arr[index] = item.replaceAll('\\', '');
       }
     });
 
-    // Join the cleaned tokens and log the result
     console.log(echoArgs.join(' '));
   } else {
-    // If no matches, log the input string with single and double quotes removed
-    console.log(inputString.replace(/'/g, '').replace(/"/g, ''));
+    console.log(inputString.replaceAll('\\', ''));
   }
 }
 
