@@ -15,7 +15,7 @@ function parseAndEchoArguments(fullArgString) {
   let currentArg = ''; // Builds the current argument piece by piece
   let inSingleQuotes = false;
   let inDoubleQuotes = false;
-  let escaped = false; // True if the previous char was a relevant backslash
+  let escaped = false;
 
   for (let i = 0; i < fullArgString.length; i++) {
     const char = fullArgString[i];
@@ -71,7 +71,6 @@ function parseAndEchoArguments(fullArgString) {
   // Join the processed arguments with a single space for the final output
   console.log(resultArgs.join(' '));
 }
-// --- End of New Echo Handler ---
 
 // Function to handle the 'type' command (no changes needed)
 function handleType(args) {
