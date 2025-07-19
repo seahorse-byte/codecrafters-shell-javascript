@@ -9,7 +9,7 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-// --- New Echo Handler: Parses the raw argument string ---
+// New Echo Handler: Parses the raw argument string
 function parseAndEchoArguments(fullArgString) {
   let resultArgs = []; // Array to hold the final processed arguments
   let currentArg = ''; // Builds the current argument piece by piece
