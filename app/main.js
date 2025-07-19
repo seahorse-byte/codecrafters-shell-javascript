@@ -36,7 +36,7 @@ function parseAndEchoArguments(fullArgString) {
     // 3. Handle quote state changes
     if (char === "'" && !inDoubleQuotes) {
       inSingleQuotes = !inSingleQuotes;
-      continue; // Don't append the quote character itself
+      continue; // Don't append the quote character itself.
     }
     if (char === '"' && !inSingleQuotes) {
       inDoubleQuotes = !inDoubleQuotes;
