@@ -105,7 +105,6 @@ function handlePwd() {
   console.log(cwd());
 }
 
-// Function to handle the 'cd' command (no changes needed)
 function handleChDir(args) {
   const dir = args[0];
   let targetDir;
