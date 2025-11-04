@@ -185,11 +185,14 @@ function prompt() {
       const match = remainingInput.match(/^(\w+)=([^\s]+)\s+/);
       if (match) {
         envVars[match[1]] = match[2];
+        console.error(`[DEBUG] Parsed env var: ${match[1]}=${match[2]}`);
         remainingInput = remainingInput.substring(match[0].length);
       } else {
         break;
       }
     }
+    console.error(`[DEBUG] Remaining input: ${remainingInput}`);
+    console.error(`[DEBUG] Env vars:`, envVars);
 
     // Extract command and full argument string from remaining input
     const firstSpaceIndex = remainingInput.indexOf(' ');
