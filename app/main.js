@@ -166,20 +166,22 @@ function prompt() {
       return;
     }
 
-    // Use simple split mainly to identify the command easily
-    // and for commands that don't need complex parsing (type, cd, potentially exec)
-    const [command, ...args] = trimmedAnswer.split(' ');
+    // Extract command and full argument string
+    const firstSpaceIndex = trimmedAnswer.indexOf(' ');
+    let command, fullArgString;
 
-    // --- Prepare arguments based on command ---
-    let fullArgString = ''; // For echo
-    if (command === 'echo') {
-      const firstSpaceIndex = trimmedAnswer.indexOf(' ');
-      if (firstSpaceIndex !== -1) {
-        // Extract everything after the first space
-        fullArgString = trimmedAnswer.substring(firstSpaceIndex + 1);
-      }
-      // If no space (e.g., just 'echo'), fullArgString remains ''
+    if (firstSpaceIndex === -1) {
+      // No arguments, just a command
+      command = trimmedAnswer;
+      fullArgString = '';
+    } else {
+      // Split into command and everything after first space
+      command = trimmedAnswer.substring(0, firstSpaceIndex);
+      fullArgString = trimmedAnswer.substring(firstSpaceIndex + 1);
     }
+
+    // Parse arguments using our general parser (handles quotes and escapes)
+    const args = parseArguments(fullArgString);
 
     // Handle exit command
     if (command === 'exit' && args[0] === '0') {
@@ -205,9 +207,9 @@ function prompt() {
         prompt();
         break;
       default:
-        // Execute external command
-        // Sticking with simple reconstruction. A full parser would be needed here too ideally.
-        const fullCmd = trimmedAnswer; // Use trimmed answer directly for exec? Might be safer.
+        // Execute external command with properly parsed and escaped arguments
+        const escapedArgs = args.map(escapeShellArg).join(' ');
+        const fullCmd = escapedArgs ? `${command} ${escapedArgs}` : command;
         exec(fullCmd, (error, stdout, stderr) => {
           if (error) {
             if (
