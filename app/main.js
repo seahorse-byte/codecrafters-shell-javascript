@@ -119,10 +119,17 @@ function handleType(args) {
     if (!p) continue;
     try {
       const fullPath = path.join(p, subCommand);
+      // Check if file exists AND is executable
       if (fs.existsSync(fullPath)) {
-        console.log(`${subCommand} is ${fullPath}`);
-        found = true;
-        break;
+        try {
+          fs.accessSync(fullPath, fs.constants.X_OK);
+          // File is executable
+          console.log(`${subCommand} is ${fullPath}`);
+          found = true;
+          break;
+        } catch {
+          // File exists but is not executable, continue searching
+        }
       }
     } catch (err) {
       /* Ignore errors */
