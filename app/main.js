@@ -276,6 +276,7 @@ function prompt() {
               console.error(stderr.trim());
             }
           }
+          restoreEnv();
           prompt();
         });
         break;
