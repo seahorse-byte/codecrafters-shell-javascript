@@ -27,13 +27,31 @@ function parseAndEchoArguments(fullArgString) {
       continue;
     }
 
-    // 2. Check for escape character trigger (only outside quotes)
+    // 2. Handle backslash inside double quotes (special escaping rules)
+    if (char === '\\' && inDoubleQuotes) {
+      // Look ahead to see what the next character is
+      const nextChar = fullArgString[i + 1];
+
+      // Inside double quotes, backslash only escapes: " \\ $ ` \n
+      // For this stage, we're implementing: \" and \\
+      if (nextChar === '"' || nextChar === '\\') {
+        // This backslash is an escape character
+        escaped = true;
+        continue; // Skip the backslash, next iteration will handle the escaped char
+      }
+      // If nextChar is not escapable, the backslash is literal
+      // Just append it and continue
+      currentArg += char;
+      continue;
+    }
+
+    // 3. Check for escape character trigger (only outside quotes)
     if (char === '\\' && !inSingleQuotes && !inDoubleQuotes) {
       escaped = true; // Set flag for the next character
       continue; // Don't append the backslash now
     }
 
-    // 3. Handle quote state changes
+    // 4. Handle quote state changes
     if (char === "'" && !inDoubleQuotes) {
       inSingleQuotes = !inSingleQuotes;
       continue; // Don't append the quote character itself
@@ -43,7 +61,7 @@ function parseAndEchoArguments(fullArgString) {
       continue; // Don't append the quote character itself
     }
 
-    // 4. Handle argument separation (space outside quotes)
+    // 5. Handle argument separation (space outside quotes)
     if (char === ' ' && !inSingleQuotes && !inDoubleQuotes) {
       // If we have gathered something for the current argument, push it.
       if (currentArg.length > 0) {
@@ -54,7 +72,7 @@ function parseAndEchoArguments(fullArgString) {
       continue;
     }
 
-    // 5. Append character to current argument
+    // 6. Append character to current argument
     // This catches:
     // - Regular characters
     // - Spaces inside quotes
