@@ -9,8 +9,8 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-// New Echo Handler: Parses the raw argument string
-function parseAndEchoArguments(fullArgString) {
+// General argument parser: Parses a raw argument string into an array of arguments
+function parseArguments(fullArgString) {
   let resultArgs = []; // Array to hold the final processed arguments
   let currentArg = ''; // Builds the current argument piece by piece
   let inSingleQuotes = false;
@@ -86,10 +86,15 @@ function parseAndEchoArguments(fullArgString) {
     resultArgs.push(currentArg);
   }
 
-  // Join the processed arguments with a single space for the final output
+  return resultArgs;
+}
+
+// Echo Handler: Uses the general parser and prints the result
+function parseAndEchoArguments(fullArgString) {
+  const resultArgs = parseArguments(fullArgString);
   console.log(resultArgs.join(' '));
 }
-// --- End of New Echo Handler ---
+// --- End of Argument Parsing ---
 
 // Function to handle the 'type' command (no changes needed)
 function handleType(args) {
