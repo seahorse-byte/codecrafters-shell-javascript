@@ -175,22 +175,56 @@ function prompt() {
       return;
     }
 
-    // Extract command and full argument string
-    const firstSpaceIndex = trimmedAnswer.indexOf(' ');
+    // Parse environment variable assignments and extract command
+    // Format: VAR=value VAR2=value2 command args
+    const envVars = {};
+    let remainingInput = trimmedAnswer;
+
+    // Extract environment variable assignments (VAR=value before the command)
+    while (true) {
+      const match = remainingInput.match(/^(\w+)=([^\s]+)\s+/);
+      if (match) {
+        envVars[match[1]] = match[2];
+        remainingInput = remainingInput.substring(match[0].length);
+      } else {
+        break;
+      }
+    }
+
+    // Extract command and full argument string from remaining input
+    const firstSpaceIndex = remainingInput.indexOf(' ');
     let command, fullArgString;
 
     if (firstSpaceIndex === -1) {
       // No arguments, just a command
-      command = trimmedAnswer;
+      command = remainingInput;
       fullArgString = '';
     } else {
       // Split into command and everything after first space
-      command = trimmedAnswer.substring(0, firstSpaceIndex);
-      fullArgString = trimmedAnswer.substring(firstSpaceIndex + 1);
+      command = remainingInput.substring(0, firstSpaceIndex);
+      fullArgString = remainingInput.substring(firstSpaceIndex + 1);
+    }
+
+    // Temporarily set environment variables for this command
+    const originalEnv = {};
+    for (const [key, value] of Object.entries(envVars)) {
+      originalEnv[key] = process.env[key];
+      process.env[key] = value;
     }
 
     // Parse arguments using our general parser (handles quotes and escapes)
     const args = parseArguments(fullArgString);
+
+    // Helper to restore environment after command execution
+    const restoreEnv = () => {
+      for (const [key, value] of Object.entries(originalEnv)) {
+        if (value === undefined) {
+          delete process.env[key];
+        } else {
+          process.env[key] = value;
+        }
+      }
+    };
 
     // Handle exit command
     if (command === 'exit' && args[0] === '0') {
