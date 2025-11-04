@@ -94,7 +94,16 @@ function parseAndEchoArguments(fullArgString) {
   const resultArgs = parseArguments(fullArgString);
   console.log(resultArgs.join(' '));
 }
-// --- End of Argument Parsing ---
+
+// Helper function to escape arguments for shell execution
+function escapeShellArg(arg) {
+  // If the argument contains special characters, wrap it in single quotes
+  // and escape any single quotes within it
+  if (/[\s"'$`\\*?\[\](){};<>|&!~]/.test(arg)) {
+    return "'" + arg.replace(/'/g, "'\\''") + "'";
+  }
+  return arg;
+}
 
 // Function to handle the 'type' command (no changes needed)
 function handleType(args) {
