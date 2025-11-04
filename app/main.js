@@ -235,18 +235,22 @@ function prompt() {
       case 'echo':
         // Pass the raw argument string to the new parser/handler
         parseAndEchoArguments(fullArgString);
+        restoreEnv();
         prompt(); // Call prompt again for next command
         break;
       case 'type':
-        handleType(args); // Use simple split args
+        handleType(args);
+        restoreEnv();
         prompt();
         break;
       case 'pwd':
         handlePwd(); // No args needed
+        restoreEnv();
         prompt();
         break;
       case 'cd':
-        handleChDir(args); // Use simple split args
+        handleChDir(args);
+        restoreEnv();
         prompt();
         break;
       default:
