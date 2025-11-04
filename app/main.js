@@ -207,7 +207,6 @@ function prompt() {
         prompt();
         break;
       default:
-        // Execute external command with properly parsed and escaped arguments
         const escapedArgs = args.map(escapeShellArg).join(' ');
         const fullCmd = escapedArgs ? `${command} ${escapedArgs}` : command;
         exec(fullCmd, (error, stdout, stderr) => {
